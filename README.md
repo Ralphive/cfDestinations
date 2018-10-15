@@ -1,46 +1,46 @@
 # cfDemoSummit18 - Step 1
 [![SAP](https://i.imgur.com/kkQTp3m.png)](https://cloudplatform.sap.com)
 
-This is a sample step by step guide of how to build cloud applications based on [Cloud Foundry](https://www.cloudfoundry.org/). 
+This is a sample step by step guide of how to use the SAP Cloud Platform Cloud Foundry Destinations service from a Node.js application, [Getting started with Cloud Foundry] (https://developers.sap.com/tutorials/hcp-cf-getting-started.html). 
 
 ### Step 1 - Create your destinations in SCP CF
 
-To create a destination, go the SAP Cloud Platform cockpit and navigate to your Subaccount. Then go to �Destinations� menu under �Connectivity� and press �New Destination� link.
+To create a destination, go the SAP Cloud Platform cockpit and navigate to your Subaccount. Then go to "Destinations" menu under "Connectivity" and press "New Destination" link.
 
 ### Step 2 - Create the required services instances
 
 To be able to use the Destinations service from our application we need to create an instance for each one of the services we will use:
-Destination 
-Connectivity
-Authorization & Trust Management
+ - Destination 
+ - Connectivity
+ - Authorization & Trust Management
 
 Creation of the destination instance
 To access the details stored in the SAP Cloud Platform Destination service we need first to create a destination instance.
 Run the following command on your CLI (after connecting, please check previous section for more details):
 
 cf create-service destination lite destination-demo-lite
-With this command you will create a service instance for the service �destination�, with the service plan �lite� and the name of your destination service instance will be �destination-demo-lite� (you can of course change the name of the service instance, just remember to change it also in the following steps).
+With this command you will create a service instance for the service "destination", with the service plan "lite" and the name of your destination service instance will be "destination-demo-lite" (you can of course change the name of the service instance, just remember to change it also in the following steps).
 
 Creation of the connectivity instance
-SAP Cloud Platform Connectivity provides a standard HTTP proxy for on-premise connectivity to be accessible by any application.�Proxy host and port are available in the credentials of the bound connectivity service via the environment variable �VCAP_SERVICES�. More details on how to interpret VCAP_SERVICES can �found in the�official CF documentation.
+SAP Cloud Platform Connectivity provides a standard HTTP proxy for on-premise connectivity to be accessible by any application."Proxy host and port are available in the credentials of the bound connectivity service via the environment variable "VCAP_SERVICES". More details on how to interpret VCAP_SERVICES can "found in the"official CF documentation.
 
-To consume the data coming from the on-premise in the application via the HTTP proxy, we need to create an SAP Cloud Platform Connectivity instance and bind it to the application. When a binding is created the application gets connectivity credentials in its�environment variables. More details about it�here.
+To consume the data coming from the on-premise in the application via the HTTP proxy, we need to create an SAP Cloud Platform Connectivity instance and bind it to the application. When a binding is created the application gets connectivity credentials in its"environment variables. More details about it"here.
 
 To create the connectivity service instance please run the following command on your CLI:
 
 	cf create-service connectivity lite connectivity-demo-lite
-With this command you will create a service instance for the service �connectivity�, with the service plan �lite� and the name of your connectivity service instance will be �connectivity-demo-lite� (you can of course change the name of the service instance, just remember to change it also in the subsequent steps).
+With this command you will create a service instance for the service "connectivity", with the service plan "lite" and the name of your connectivity service instance will be "connectivity-demo-lite" (you can of course change the name of the service instance, just remember to change it also in the subsequent steps).
 
 Creation of the Authorization & Trust Management instance (aka. XSUAA)
 The central identity management service for the Cloud Foundry environment manages application authorizations and the trust to identity providers.
-By calling the�application, the user will be redirected to the XSUAA and will be prompt to give his credentials. It will then achieve certain checks like verifying the OAuth client, client�s scopes, user�s scopes (Scopes are permissions to access one or more resources). Assuming everything is�fine, the�user will be authenticated and the XSUAA will redirect the�browser to the application.
-In a second step�the application will take the client Id and the client secret and will talk directly with the XSUAA to get an access token. Then the application will send both tokens�as HTTP header so that it can consume the backend system via the SAP Cloud Platform Connectivity.
+By calling the"application, the user will be redirected to the XSUAA and will be prompt to give his credentials. It will then achieve certain checks like verifying the OAuth client, client"s scopes, user"s scopes (Scopes are permissions to access one or more resources). Assuming everything is"fine, the"user will be authenticated and the XSUAA will redirect the"browser to the application.
+In a second step"the application will take the client Id and the client secret and will talk directly with the XSUAA to get an access token. Then the application will send both tokens"as HTTP header so that it can consume the backend system via the SAP Cloud Platform Connectivity.
 The next step is then to create an instance for the XSUAA. 
 To create the xsuaa service instance please run the following command on your CLI:
 
-cf create-service xsuaa application xsuaa-demo -c �{ "xsappname" : "connectivity-app-demo", "tenant-mode": "dedicated"}�
+cf create-service xsuaa application xsuaa-demo -c "{ "xsappname" : "connectivity-app-demo", "tenant-mode": "dedicated"}"
 
-With this command you will create a service instance for the service �connectivity�, with the service plan �lite� and the name of your connectivity service instance will be �connectivity-demo-lite� (you can of course change the name of the service instance, just remember to change it also in the following steps).
+With this command you will create a service instance for the service "connectivity", with the service plan "lite" and the name of your connectivity service instance will be "connectivity-demo-lite" (you can of course change the name of the service instance, just remember to change it also in the following steps).
 
 ### Step 3 - Get the sample application 
 Download/clone the full application source code from here.
