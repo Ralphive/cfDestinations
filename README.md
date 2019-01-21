@@ -71,6 +71,8 @@ As a result of the cf push command you will get the status of your application a
 
 To test your application, you can run a REST API testing tool like for example Postman can call the GetByDItems and GetB1Items with the GET command.
  
+ 
+Note: SAP Business ByDesign doesn't expose oData services by default. If you want to execute the GetByDItems request you need first to expose the corresponding oData services (available inside this package at models/byd/odata folder).
 
  
 
