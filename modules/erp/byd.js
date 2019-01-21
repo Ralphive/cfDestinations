@@ -1,20 +1,25 @@
-/* Module to manipulate ByD data */
-
+/**
+ * SAP Business One ByDesign module to interact with ByDesign Data 
+ * Server Configuration and User Credentials set in the Cloud Foundry associated ByD Destination and modules/dest/dest-app.json file 
+ */
 module.exports = {
+    // Get ByDesign Items (Materials) through a custom oData service
     GetItems: function (options, callback) {
         return (GetItems(options, callback))
     }
 }
 
+//Load Node Modules
 const request = require('request')  // HTTP Client
 
+// Load internal odata module
 const odata = require('../odata')
 
-//ByD Models
-const model_items = "/byd_items/MaterialCollection"
-
-//Destinations
+// Load internal Destination module 
 const Route = require("../dest/Destination");
+
+// ByD custom oData service path
+const model_items = "/byd_items/MaterialCollection"
 
 // Load ByD route and destination
 var bydRoute = null;
@@ -23,15 +28,18 @@ Route.getRoute("ByD").then(r => {
     bydRoute = r;
     console.log("bydRoute " + bydRoute.target.name);
 
-    // Load destination
-    // destination based on route, need to wait!
+    // Load ByD destination
     bydRoute.getDestination().then(dest => {
         console.log(dest);
         bydDest = dest;
     });
 });
 
-
+/**
+ * Handle BydRequests
+ * @param {*} options 
+ * @param {*} callback 
+ */
 function ByDRequest(options, callback) {
 
     if (options.headers == null) { options.headers = [] }
@@ -53,6 +61,11 @@ function ByDRequest(options, callback) {
     });
 }
 
+/**
+ * Get ByDesign Items (Materials) through a custom oData service
+ * @param {*} query 
+ * @param {*} callback 
+ */
 function GetItems(query, callback) {
     var options = {};
     var select = "" //"InternalID,Description,BaseMeasureUnitCode"
@@ -73,7 +86,6 @@ function GetItems(query, callback) {
         if (error) {
             callback(error);
         } else {
-
             callback(null, bodyItems);
         }
     });

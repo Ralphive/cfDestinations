@@ -1,10 +1,10 @@
-/* Load NodeJS Modules */
+// Load NodeJS Modules 
 var express = require('express');
 var path = require('path');
 var app = express();
 app.use(express.static('public'));
 
-/* Load Local Modules */
+// Load Local B1 Module
 var b1 = require('./modules/erp/b1');
 var b1Options = {
   headers: {
@@ -12,9 +12,16 @@ var b1Options = {
     "Accept": "application/json",
   }
 }
+// Load Local ByD Module 
 var byd = require('./modules/erp/byd');
+
+
 var output = {};
 
+/**
+ * Expose /GetB1Items GET request
+ * return SAP Business One Items
+ */
 app.get('/GetB1Items', function (req, res) { 
   b1.GetItems(b1Options, function (error, resp) {
     if (error) {
@@ -27,6 +34,10 @@ app.get('/GetB1Items', function (req, res) {
   });
 });
 
+/**
+ * Expose /GetByDItems GET request
+ * return SAP ByDesign Items (Materials)
+ */
 app.get('/GetByDItems', function (req, res) { 
   byd.GetItems(b1Options, function (error, resp) {
     if (error) {
@@ -39,6 +50,10 @@ app.get('/GetByDItems', function (req, res) {
   });
 });
 
+/**
+ * Expose root patch
+ * show index.html
+ */
 app.get('/', function (req, res) {
   res.sendFile(path.join(__dirname, 'views/index.html'));
 });

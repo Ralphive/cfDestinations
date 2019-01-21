@@ -1,9 +1,13 @@
-/* Service Layer module to interact with B1 Data */
-/* Server Configuration and User Credentials set in the /config.json file */
+/**
+ * SAP Business One Service Layer module to interact with B1 Data 
+ * Server Configuration and User Credentials set in the Cloud Foundry associated B1 Destination and modules/dest/dest-app.json file 
+ */
 module.exports = {
+    // Connect to SAP Business One
     Connect: function (response) {
         return (Connect(response));
     },
+    // Get B1 Items through a Service Layer oData service
     GetItems: function (options, response) {
         return (GetItems(options, response));
     }
@@ -12,20 +16,21 @@ module.exports = {
 //Load Node Modules
 var req = require('request') // HTTP Client
 
+// Load internal odata module
 const odata = require('../odata')
 
-//Destinations 
+// Load internal Destination module 
 const Route = require("../dest/Destination");
 
 var SLServer = null;
-// Load ByD route and destination
+// Load B1 route and destination (as defined in modules/dest/dest-app.json file)
 var b1Route = null;
 var b1Dest = null;
 Route.getRoute("B1").then(r => {
     b1Route = r;
     console.log("b1Route " + b1Route.target.name);
 
-    // Load destination
+    // Load B1 destination
     b1Route.getDestination().then(dest => {
         console.log(dest);
         b1Dest = dest;
@@ -35,6 +40,9 @@ Route.getRoute("B1").then(r => {
 
 var connectedStatus = false;
 
+/**
+ * Login to B1 Service Layer via /Login oData service
+ */
 function Connect() {
     return new Promise(function (resolve, reject) {
         var uri = SLServer + "Login"
@@ -51,7 +59,7 @@ function Connect() {
         //Set HTTP Request Options
         options = { uri: uri, body: JSON.stringify(data) }
 
-        //Make Request
+        //Post Request
         req.post(options, function (error, response, body) {
             if (!error && response.statusCode == 200) {
 
@@ -71,13 +79,18 @@ function Connect() {
     });
 }
 
+/**
+ * Get B1 Items via Service Layer /Items oData service
+ * @param {*} options 
+ * @param {*} callback 
+ */
 function GetItems(options, callback) {
     var uri = SLServer + "Items?$select=ItemCode,ItemName,"
         + "QuantityOnStock,QuantityOrderedFromVendors,QuantityOrderedByCustomers"
         + "&$filter=ItemsGroupCode%20eq%20103"
     var resp = {}
 
-    //Set HTTP Request Options
+    // Set HTTP Request Options
     options.uri = uri
 
     if (!connectedStatus) {
@@ -85,7 +98,7 @@ function GetItems(options, callback) {
             function (resp) {
                 options.headers["Cookie"] = resp.cookie;
 
-                //Make Request
+                // Get Request
                 req.get(options, function (error, response, body) {
                     if (!error && response.statusCode == 200) {
                         body = JSON.parse(body);
@@ -100,7 +113,7 @@ function GetItems(options, callback) {
             function (error, resp) {
                 console.error("Can't Connect to Service Layer");
                 console.error(error);
-                return; // Abort Execution
+                return; /* Abort Execution */
             });
     }
 }
