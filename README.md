@@ -1,11 +1,18 @@
-# cfDemoSummit18 - Step 1
+# cfDestinations 
 [![SAP](https://i.imgur.com/kkQTp3m.png)](https://cloudplatform.sap.com)
 
-This is a sample step by step guide of how to use the SAP Cloud Platform Cloud Foundry Destinations service from a Node.js application, [Getting started with Cloud Foundry] (https://developers.sap.com/tutorials/hcp-cf-getting-started.html). 
+This is a sample step by step guide showing how to deploy a Cloud Foundry NodeJS application that:
+1. Connect to an SAP Business One and/or SAP Business ByDesign environment
+2. Use the SAP Cloud Platform Cloud Foundry Destinations service from a Node.js application
+[Getting started with Cloud Foundry] (https://developers.sap.com/tutorials/hcp-cf-getting-started.html). 
+
+Full details describing how to deploy and configure this application can be found at the following blog:
+https://blogs.sap.com/2018/10/16/call-sap-cloud-platform-cloud-foundry-destinations-from-your-node.js-application/
 
 ### Step 1 - Create your destinations in SCP CF
 
 To create a destination, go the SAP Cloud Platform cockpit and navigate to your Subaccount. Then go to "Destinations" menu under "Connectivity" and press "New Destination" link.
+Check for screen captures and detailed configuration parameters for B1 and ByD system in the following blog: https://blogs.sap.com/2018/10/16/call-sap-cloud-platform-cloud-foundry-destinations-from-your-node.js-application/
 
 ### Step 2 - Create the required services instances
 
