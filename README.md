@@ -69,10 +69,12 @@ As a result of the cf push command you will get the status of your application a
 ### Step 6 - Test your application
 As a result of the cf push command you will get the status of your application as well as the url to your application: 
 
-To test your application, you can run a REST API testing tool like for example Postman can call the GetByDItems and GetB1Items with the GET command.
+To test your application, you can run a REST API testing tool like for example Postman can call:
+- GetByDItems and GetB1Items with the GET command.
+- CreateB1Order and CreateByDOrder with the POST command and a body containing lines details ()
  
  
-**Note:** SAP Business ByDesign doesn't expose oData services by default. If you want to execute the GetByDItems request you need first to expose the corresponding oData services (available inside this package at models/byd/odata folder).
+**Note:** SAP Business ByDesign doesn't expose oData services by default. If you want to execute the GetByDItems request you need first to expose the corresponding oData services (available inside this package at https://github.com/B1SA/cfDestinations/tree/master/models/byd/odata folder).
 
  
 
