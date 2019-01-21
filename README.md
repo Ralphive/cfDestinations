@@ -74,7 +74,7 @@ To test your application, you can run a REST API testing tool like for example P
 - CreateB1Order and CreateByDOrder with the POST command and a body containing lines details ()
  
  
-**Note:** SAP Business ByDesign doesn't expose oData services by default. If you want to execute the GetByDItems request you need first to import the required oData services file into ByDesign (file to be imported available inside this package at https://github.com/B1SA/cfDestinations/tree/master/models/byd/odata folder).
+**Note:** SAP Business ByDesign doesn't expose oData services by default. If you want to execute the GetByDItems request you need first to import the required oData services file into ByDesign (file to be imported available inside this package at https://github.com/B1SA/cfDestinations/tree/master/models/byd/odata folder). Follow this video for more details: [SAP Business by Design - How to Create an OData Service](https://www.youtube.com/watch?v=z6mF_1hFths).
 
  
 
