@@ -51,6 +51,7 @@ To be able to use the Destinations service from our application we need to creat
 In order to create service instances in the Cloud Foundry environment you can use either the CF CLI (command line interface) or the CF cockpit, following steps are showing how to create then with the CLI. You can get more details on how to install and connect to CF CLI in the fo
 
 Before running the cf create-service command login to your CF environment with the command:
+
 	cf login
 
 #### Creation of the redis instance
