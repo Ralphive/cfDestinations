@@ -2,24 +2,63 @@
 [![SAP](https://i.imgur.com/kkQTp3m.png)](https://cloudplatform.sap.com)
 
 This is a sample step by step guide showing how to deploy a Cloud Foundry NodeJS application that:
-1. Connect to an SAP Business One and/or SAP Business ByDesign environment
-2. Use the SAP Cloud Platform Cloud Foundry Destinations service from a Node.js application
+1. Connects to an SAP Business One and/or SAP Business ByDesign environment 
+2. Uses the SAP Cloud Platform Cloud Foundry Destinations service from a Node.js application
 [Getting started with Cloud Foundry] (https://developers.sap.com/tutorials/hcp-cf-getting-started.html). 
 
 Full details describing how to deploy and configure this application can be found at the following blog:
 https://blogs.sap.com/2018/10/16/call-sap-cloud-platform-cloud-foundry-destinations-from-your-node.js-application/
 
-### Step 1 - Create your destinations in SCP CF
+## Table of Contents
+* **[Prerequisites](#Prerequisites)**
+* **[Environment setup](#environment-setup)**
+* **[App Config and Deployment](#App-Config-and-Deployment)**
+* **[Test your application](#Test-your-application)** 
+* **[License](#license)**
+
+## Prerequisites
+* A free trial account on [SAP Cloud Platform]((https://cloudplatform.sap.com)) with Cloud Foundry Trial initialized;
+* The [Cloud Foundry Command Line Interface (CLI)](https://docs.cloudfoundry.org/cf-cli/install-go-cli.html) on your machine;
+* Access to an SAP Business One and/or SAP Business By Design server
+
+## Environment setup
+
+## STEP #1 - Digital Core preparation
+SAP Business One offers Service Layer oData services and no preparation is required.
+SAP Business By Design oData services required need to be exposed.
+
+### Setup the SAP ByD OData API services 
+In our sample application we will access two oData services to retrieve and create Items and Orders entities.
+
+* Import the all the available [models](https://github.com/B1SA/cfDestinations/tree/master/models/byd/odata) in the [SAP Businesss ByDesign Odata Services](https://www.youtube.com/watch?v=z6mF_1hFths)
+* Activate the models and take note of the service URL
+
+### STEP #2 - Create your B1 and/or ByD destinations in SCP CF
 
 To create a destination, go the SAP Cloud Platform cockpit and navigate to your Subaccount. Then go to "Destinations" menu under "Connectivity" and press "New Destination" link.
 Check for screen captures and detailed configuration parameters for B1 and ByD system in the following blog: https://blogs.sap.com/2018/10/16/call-sap-cloud-platform-cloud-foundry-destinations-from-your-node.js-application/
 
-### Step 2 - Create the required services instances
+You need to create a destination for each ERP backend you wan to connect to. 
+
+### STEP #3 - Create the required services instances
 
 To be able to use the Destinations service from our application we need to create an instance for each one of the services we will use:
+ - Redis
  - Destination 
  - Connectivity
  - Authorization & Trust Management
+
+In order to create service instances in the Cloud Foundry environment you can use either the CF CLI (command line interface) or the CF cockpit, following steps are showing how to create then with the CLI. You can get more details on how to install and connect to CF CLI in the fo
+
+Before running the cf create-service command login to your CF environment with the command:
+	cf login
+
+#### Creation of the redis instance
+The application is storing session cookies and tokens in Redis DB.
+Run the following command on your CLI:
+
+	cf create-service redis v3.0-dev cachedb
+With this command you will create a service instance for the service "redis", with the service plan "v3.0-dev" and the name of your destination service instance will be "cachedb" (you can of course change the name of the service instance, just remember to change it also in the following steps).
 
 #### Creation of the destination instance
 To access the details stored in the SAP Cloud Platform Destination service we need first to create a destination instance.
@@ -48,15 +87,17 @@ To create the xsuaa service instance please run the following command on your CL
 	cf create-service xsuaa application xsuaa-demo -c "{ "xsappname" : "connectivity-app-demo", "tenant-mode": "dedicated"}"
 With this command you will create a service instance for the service "connectivity", with the service plan "lite" and the name of your connectivity service instance will be "connectivity-demo-lite" (you can of course change the name of the service instance, just remember to change it also in the following steps).
 
-### Step 3 - Get the sample application 
+## App Config and Deployment
+
+### STEP #1 - Get the sample application 
 Download/clone the full application source code from here.
 
-### Step 4 - Adjust the manifest.yml 
+### STEP #2 - Adjust the manifest.yml 
 The binding between the service instances we created in a previous step and your application are defined in the manifest.yml file. 
  
 If you changed the names of the services instances during the create-instance operation, please change the names accordingly in the manifest.yml file.
 
-### Step 5 - Deploy the application into your SAP Cloud Platform Cloud Foundry space
+### STEP #3 - Deploy the application into your SAP Cloud Platform Cloud Foundry space
 To deploy the sample application into your SAP Cloud Platform Cloud Foundry space we use the Cloud Foundry Command Line Interface (CLI) and run the following command:
 
 	cf push --random-route
@@ -66,17 +107,16 @@ During the deployment all required Node.js modules will be installed and the spe
 As a result of the cf push command you will get the status of your application as well as the url to your application: 
 
 
-### Step 6 - Test your application
+## Test your application
 As a result of the cf push command you will get the status of your application as well as the url to your application: 
 
 To test your application, you can run a REST API testing tool like for example Postman can call:
-- GetByDItems and GetB1Items with the GET command.
-- CreateB1Order and CreateByDOrder with the POST command and a body containing lines details ()
+- ByDItems, ByDOrders, B1Items and B1Orders with the GET command.
+- B1Orders and ByDOrders with the POST command and a body containing lines details ()
  
- 
-**Note:** SAP Business ByDesign doesn't expose oData services by default. If you want to execute the GetByDItems request you need first to import the required oData services file into ByDesign (file to be imported available inside this package at https://github.com/B1SA/cfDestinations/tree/master/models/byd/odata folder). Follow this video for more details: [SAP Business by Design - How to Create an OData Service](https://www.youtube.com/watch?v=z6mF_1hFths).
+## License
+SMB Marketplace Assistant prototype is released under the terms of the MIT license. See [LICENSE](LICENSE) for more information or see https://opensource.org/licenses/MIT.
 
- 
 
 
 

@@ -1,31 +1,89 @@
 // Load NodeJS Modules 
-var express = require('express');
-var path = require('path');
-var app = express();
-app.use(express.static('public'));
+const express = require('express')
+const bodyParser = require('body-parser') // support body parsing
+const redis = require("redis")  // redis service to keep login cookies
+const path = require('path')
 
-// Load Local B1 Module
-var b1 = require('./modules/erp/b1');
-var b1Options = {
-  headers: {
-    "Content-Type": "application/json",
-    "Accept": "application/json",
-  }
-}
-// Load Local ByD Module 
-var byd = require('./modules/erp/byd');
+const app = express()
 
+app.use(express.static('public'))
 
-var output = {};
+// Support body on post requests
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+const b1 = require('./modules/erp/b1'); // B1 erp module
+const byd = require('./modules/erp/byd'); // ByD erp module
+
+// Configure Redis 
+console.log("Configuring redis")
+var credentials = null;
+var vcap = null;
+if (process.env.VCAP_SERVICES) {
+    credentials = {}
+    vcap = JSON.parse(process.env.VCAP_SERVICES);
+    credentials = vcap['redis'][0].credentials;
+    credentials.host = credentials.hostname
+    console.log("Redis credentials found in VCAP")
+};
+var redisClient = redis.createClient(credentials);
+redisClient.on('connect', function () {
+    console.log("Connected to Redis")
+    b1.setRedisClient(redisClient)
+    byd.setRedisClient(redisClient)
+});
 
 /**
- * Expose /GetB1Items GET request
+ * Expose /B1Items GET request
  * return SAP Business One Items
  */
-app.get('/GetB1Items', function (req, res) { 
-  b1.GetItems(b1Options, function (error, resp) {
+app.get('/B1Items', function (req, res) { 
+  b1.GetItems(req.query, function (error, resp) {
     if (error) {
       console.error("Can't get Items from B1 Service Layer - " + error);
+      res.send(error);
+    } else {
+      res.setHeader('Content-Type', 'application/json');
+      res.status(200)
+      res.send(resp);
+    }
+  });
+});
+
+/**
+ * Expose /B1Orders GET request
+ * gets SAP Business One Orders
+ */
+app.get('/B1Orders', function (req, res) {
+  console.log("REQUEST: List B1 Sales Orders")
+  b1.GetOrders(req.query, function (error, response) {
+      res.setHeader('Content-Type', 'application/json')
+      res.status(200)
+      res.send(response)
+  })
+});
+
+/**
+ * Expose /B1Orders POST request
+ * creates SAP Business One Orders
+ */
+app.post('/B1Orders', function (req, res) {
+  console.log("REQUEST: Create B1 Sales Order")
+  b1.PostOrders(req.body, function (response) {
+      res.setHeader('Content-Type', 'application/json')
+      res.status(201)
+      res.send(response)
+  })
+});
+
+/**
+ * Expose /ByDItems GET request
+ * return SAP ByDesign Items (Materials)
+ */
+app.get('/ByDItems', function (req, res) { 
+  byd.GetItems(req.query, function (error, resp) {
+    if (error) {
+      console.error("Can't get Items from ByD Service Layer - " + error);
       res.send(error);
     } else {
       res.setHeader('Content-Type', 'application/json');
@@ -35,19 +93,29 @@ app.get('/GetB1Items', function (req, res) {
 });
 
 /**
- * Expose /GetByDItems GET request
- * return SAP ByDesign Items (Materials)
+ * Expose /ByDOrders GET request
+ * gets SAP Business ByDesign Orders
  */
-app.get('/GetByDItems', function (req, res) { 
-  byd.GetItems(b1Options, function (error, resp) {
-    if (error) {
-      console.error("Can't get Items from ByD Service Layer - " + error);
-      res.send(error);
-    } else {
-      res.setHeader('Content-Type', 'application/json');
-      res.send(resp);
-    }
-  });
+app.get('/ByDOrders', function (req, res) {
+  console.log("REQUEST: List ByD Sales Orders")
+  byd.GetOrders(req.query, function (error, response) {
+      res.setHeader('Content-Type', 'application/json')
+      res.status(200)
+      res.send(response)
+  })
+});
+
+/**
+ * Expose /ByDOrders POST request
+ * creates SAP Business ByDesign Orders
+ */
+app.post('/ByDOrders', function (req, res) {
+  console.log("REQUEST: Create ByD Sales Order")
+  byd.PostOrders(req.body, function (response) {
+      res.setHeader('Content-Type', 'application/json')
+      res.status(201)
+      res.send(response)
+  })
 });
 
 /**
