@@ -23,11 +23,11 @@ https://blogs.sap.com/2018/10/16/call-sap-cloud-platform-cloud-foundry-destinati
 
 ## Environment setup
 
-## STEP #1 - Digital Core preparation
+### STEP #1 - Digital Core preparation
 SAP Business One offers Service Layer oData services and no preparation is required.
 SAP Business By Design oData services required need to be exposed.
 
-### Setup the SAP ByD OData API services 
+#### Setup the SAP ByD OData API services 
 In our sample application we will access two oData services to retrieve and create Items and Orders entities.
 
 * Import the all the available [models](https://github.com/B1SA/cfDestinations/tree/master/models/byd/odata) in the [SAP Businesss ByDesign Odata Services](https://www.youtube.com/watch?v=z6mF_1hFths)
